@@ -1,9 +1,6 @@
-import React, { useEffect, useRef } from 'react';
-import Prism from 'prismjs';
-import 'prismjs/components/prism-json';
-import 'prismjs/components/prism-markup';
-import 'prismjs/themes/prism.css';
+import React from 'react';
 import type { DataFormat, DataInfo } from '../types';
+import { CodeHighlighter } from './CodeHighlighter';
 
 interface FormatOutputProps {
   value: string;
@@ -22,14 +19,7 @@ export const FormatOutput: React.FC<FormatOutputProps> = ({
   onCopy,
   dataInfo,
 }) => {
-  const codeRef = useRef<HTMLElement>(null);
   const [copySuccess, setCopySuccess] = React.useState(false);
-
-  useEffect(() => {
-    if (codeRef.current && value && !error) {
-      Prism.highlightElement(codeRef.current);
-    }
-  }, [value, format, error]);
 
   const handleCopy = async () => {
     const success = await onCopy();
@@ -40,9 +30,6 @@ export const FormatOutput: React.FC<FormatOutputProps> = ({
     }
   };
 
-  const getLanguage = () => {
-    return format === 'json' ? 'json' : 'markup';
-  };
 
   const renderDataInfo = () => {
     if (!dataInfo) return null;
@@ -138,14 +125,7 @@ export const FormatOutput: React.FC<FormatOutputProps> = ({
             </div>
           </div>
         ) : value ? (
-          <pre className="code-block">
-            <code
-              ref={codeRef}
-              className={`language-${getLanguage()}`}
-            >
-              {value}
-            </code>
-          </pre>
+          <CodeHighlighter code={value} language={format} />
         ) : (
           <div className="border-2 border-dashed border-gray-200 rounded-lg p-8 text-center min-h-64 flex items-center justify-center">
             <div className="text-gray-400">

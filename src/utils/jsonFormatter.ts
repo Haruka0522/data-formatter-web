@@ -85,8 +85,11 @@ export const getJSONInfo = (input: string) => {
           properties: keys.slice(0, 5), // 最初の5つのプロパティを表示
         };
       } else {
+        const objType = typeof obj;
         return {
-          type: typeof obj,
+          type: objType === 'bigint' ? 'number' : 
+                objType === 'function' || objType === 'symbol' || objType === 'undefined' ? 'null' :
+                objType as 'string' | 'number' | 'boolean' | 'null',
           value: obj,
           path,
         };
