@@ -22,7 +22,7 @@ export interface FormatterOptions {
 
 // データ情報の型定義
 export interface JSONDataInfo {
-  type: string;
+  type: 'object' | 'array' | 'string' | 'number' | 'boolean' | 'null';
   length?: number;
   keys?: number;
   path?: string;
