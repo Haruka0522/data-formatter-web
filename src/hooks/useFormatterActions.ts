@@ -1,7 +1,8 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import type { DataFormat, FormatterOptions, AppState } from '../types';
 import { formatJSON, minifyJSON } from '../utils/jsonFormatter';
 import { formatXML, minifyXML } from '../utils/xmlFormatter';
+import { detectDataFormat } from '../utils/validators';
 import { SAMPLE_JSON, SAMPLE_XML } from '../constants/sampleData';
 
 interface UseFormatterActionsProps {
@@ -73,6 +74,23 @@ export const useFormatterActions = ({ state, updateState, resetState }: UseForma
       error: undefined,
     });
   }, [updateState]);
+
+  // 自動フォーマット切り替え機能
+  useEffect(() => {
+    const trimmedInput = state.inputData.trim();
+    if (!trimmedInput) return;
+
+    const detectedFormat = detectDataFormat(state.inputData);
+    
+    // 有効なフォーマットが検出され、現在の選択と異なる場合のみ自動切り替え
+    if (detectedFormat !== 'unknown' && detectedFormat !== state.format) {
+      updateState({
+        format: detectedFormat,
+        outputData: '',
+        error: undefined,
+      });
+    }
+  }, [state.inputData, state.format, updateState]);
 
   return {
     setInputData,

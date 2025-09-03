@@ -15,10 +15,10 @@ const PrismHighlighter: React.FC<CodeHighlighterProps> = ({ code, language }) =>
       
       // Load language-specific components
       if (language === 'json') {
-        // @ts-ignore - Prism component imports don't have proper types
+        // @ts-expect-error - Prism component imports don't have proper types
         await import('prismjs/components/prism-json.js');
       } else if (language === 'xml') {
-        // @ts-ignore - Prism component imports don't have proper types
+        // @ts-expect-error - Prism component imports don't have proper types
         await import('prismjs/components/prism-markup.js');
       }
       
