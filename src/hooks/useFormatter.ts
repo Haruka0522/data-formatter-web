@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import type { DataFormat, AppState, FormatterOptions, DataInfo } from '../types';
 import { formatJSON, minifyJSON, getJSONInfo } from '../utils/jsonFormatter';
 import { formatXML, minifyXML, getXMLInfo } from '../utils/xmlFormatter';
@@ -129,6 +129,24 @@ export const useFormatter = (): UseFormatterReturn => {
       error: undefined,
     }));
   }, []);
+
+  // 自動フォーマット切り替え機能
+  useEffect(() => {
+    const trimmedInput = state.inputData.trim();
+    if (!trimmedInput) return;
+
+    const detectedFormat = detectDataFormat(state.inputData);
+    
+    // 有効なフォーマットが検出され、現在の選択と異なる場合のみ自動切り替え
+    if (detectedFormat !== 'unknown' && detectedFormat !== state.format) {
+      setState(prev => ({
+        ...prev,
+        format: detectedFormat,
+        outputData: '',
+        error: undefined,
+      }));
+    }
+  }, [state.inputData, state.format]);
 
   const info = useMemo(() => {
     const detectedFormat = state.inputData.trim() 
